@@ -174,11 +174,7 @@ def process_participant(participant):
     scipy.io.wavfile.write(os.path.join(path_output, f'{participant}_orig_audio.wav'), audio_sr, scaled)
 
     # Extract Spectrogram
-    mel_spec = extractor.extract_mel_spectrogram(scaled, audio_sr)
-
-    # Align to EEG features
-    words = extractor.downsample_labels(words)
-    words = words[model_order * step_size:words.shape[0] - model_order * step_size]
+    mel_spec = extractor.extract_mel_spectrogram(scaled, audio_sr)    
     mel_spec = mel_spec[model_order * step_size:mel_spec.shape[0] - model_order * step_size, :]
 
     if mel_spec.shape[0] != feat.shape[0]:
@@ -186,15 +182,10 @@ def process_participant(participant):
         mel_spec = mel_spec[:t_len, :]
         feat = feat[:t_len, :]
 
-    # Create feature names
-    feature_names = extractor.name_vector(channels[:, None])
 
-    # Save everything
     print('Saving Files')
     np.save(os.path.join(path_output, f'{participant}_feat.npy'), feat)
-    np.save(os.path.join(path_output, f'{participant}_procWords.npy'), words)
     np.save(os.path.join(path_output, f'{participant}_spec.npy'), mel_spec)
-    np.save(os.path.join(path_output, f'{participant}_feat_names.npy'), feature_names)
 
 
 def extract_features_for_all_participants():
