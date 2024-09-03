@@ -1,3 +1,10 @@
+'''
+The implementaion is taken from the Authors of this paper
+Verwoert, M., Ottenhoff, M.C., Goulis, S. et al. Dataset of Speech Production in intracranial Electroencephalography. Sci Data 9, 434 (2022). https://doi.org/10.1038/s41597-022-01542-9
+
+'''
+
+
 import numpy as np
 import math
 
