@@ -6,6 +6,7 @@ import seaborn as sns
 import numpy as np
 import src.config as config
 import pandas as pd
+import pdb
 
 def plot_history():
     print('*****************Plotting History******************')
@@ -24,9 +25,13 @@ def plot_history():
         plt.plot(data['val_loss'])
     
     plt.legend(names)
+    plt.xlabel('Epochs', fontsize=14, fontweight='bold')
+    plt.ylabel('Mean Squared Error', fontsize=14, fontweight='bold')
+    plt.xticks(fontsize=12, fontweight='bold')
+    plt.yticks(fontsize=12, fontweight='bold')
+
     plt.tight_layout()
-    plt.xlabel('Epochs')
-    plt.ylabel('Mean Squared Error')
+   
     plt.savefig(Path(destination, 'history.png'), dpi=600)
     plt.clf()
     
@@ -56,8 +61,8 @@ def plot_correlation():
     std_errors = np.std(data, axis=2)  # Shape: (10, 10)
 
     mean_per_subject = np.mean(mean_correlations, axis=1)  # Shape: (10,)
-    std_per_subject = np.sqrt(np.mean(std_errors**2, axis=1) / num_folds)  # Shape: (10,)
-
+    std_per_subject = np.std(mean_correlations, axis=1)  # Shape: (10,)
+    #pdb.set_trace()
     sorted_indices = np.argsort(mean_per_subject)
     sorted_mean_per_subject = mean_per_subject[sorted_indices]
     sorted_std_per_subject = std_per_subject[sorted_indices]
@@ -70,14 +75,18 @@ def plot_correlation():
     bars = ax.bar(range(num_subjects), sorted_mean_per_subject, yerr=sorted_std_per_subject, capsize=8, color=[bar_colors[i] for i in range(num_subjects)], edgecolor='black', alpha=0.8, label='Mean Correlation')
 
     for i in range(num_subjects):
-        ax.plot(np.full(num_folds, i), sorted_mean_correlations[i], 's', color=sorted_dot_colors[i], alpha=0.7, label=f'Folds (Subject {i + 1})', markersize=8, linestyle='None')
+        ax.plot(np.full(num_folds, i), sorted_mean_correlations[i], '.', color=sorted_dot_colors[i], alpha=0.7, label=f'Folds (Subject {i + 1})', markersize=8, linestyle='None')
 
-  
-    ax.set_ylabel('Correlation', fontsize=14)
+    ax.set_ylabel('Correlation', fontsize=16, fontweight='bold')
     ax.set_xticks(range(num_subjects))
-    ax.set_xticklabels([f'sub-{names[i]}' for i in sorted_indices], fontsize=12)
+    ax.set_xticklabels([f'sub-{names[i]}' for i in sorted_indices], fontsize=14, fontweight='bold')
+    #ax.set_yticklabels(ax.get_yticks(), fontsize=14, fontweight='bold')
+
+    
     ax.grid(True, linestyle='--', alpha=0.7)
-    plt.ylim([0.8,1])
+    plt.ylim([0.8,0.95])
+    plt.xticks(fontsize=12, fontweight='bold')
+    plt.yticks(fontsize=12, fontweight='bold')
     fig.tight_layout()
 
     # Show the plot
@@ -134,12 +143,19 @@ def plot_stgis():
         x = np.random.normal(i + 1, 0.04, size=len(y))  # Add some jitter to the x-axis
         ax.scatter(x, y, color=sorted_dot_colors[i], alpha=0.7, s=20, edgecolor='black', zorder=3)
 
-    ax.set_ylabel('STGI', fontsize=14)
-    ax.set_xticks(range(1, num_subjects + 1))
-    ax.set_xticklabels([f'sub-{names[i]}' for i in sorted_indices], fontsize=12)
+    ax.set_ylabel('STGI', fontsize=16, fontweight='bold')
+    #ax.set_xticks(range(num_subjects))
+   
+    labels = [f'sub-{names[i]}' for i in sorted_indices]
+    ax.set_xticklabels(labels, fontsize=14, fontweight='bold')
+    #ax.set_yticklabels(ax.get_yticks(), fontsize=14, fontweight='bold')
     ax.grid(True, linestyle='--', alpha=0.7)
+
+   
     plt.ylim([0.45, 0.65])
     fig.tight_layout()
+    plt.xticks(fontsize=12, fontweight='bold')
+    plt.yticks(fontsize=12, fontweight='bold')
 
     # Save the plot
     plt.savefig(Path(destination, 'stgis.png'), dpi=600)
