@@ -11,6 +11,7 @@
 ![Scikit-learn](https://img.shields.io/badge/Scikit--learn-0.24+-red.svg)
 ![Pandas](https://img.shields.io/badge/Pandas-1.3+-purple.svg)
 ![Seaborn](https://img.shields.io/badge/Seaborn-0.11+-green.svg)
+![pyWNB](https://img.shields.io/badge/pyWNB-0.1.1-blue.svg)
 
 This project focuses on processing, reconstructing, and visualizing audio data. It is designed to work with datasets that involve audio recordings from multiple participants, performing tasks such as feature extraction, audio reconstruction, and generating visualizations to assess performance.
 
