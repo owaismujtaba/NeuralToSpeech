@@ -12,7 +12,7 @@ This project focuses on processing, reconstructing, and visualizing audio data. 
 
 Below is an illustration of the preprocessing pipeline used in the project:
 
-![Preprocessing Pipeline](Images/dataprocessing.png)
+![Preprocessing Pipeline](Images/dataprocessing.PNG)
 
 ## Model Architecture
 
