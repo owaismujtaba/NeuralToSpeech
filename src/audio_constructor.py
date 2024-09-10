@@ -10,10 +10,11 @@ from sklearn.model_selection import train_test_split
 import src.reconstructWave as rW
 import src.MelFilterBank as mel
 import src.config as config
-from src.models import model_Seq
+from src.models import NeuroInceptDecoder, FCN, CNN
 from tensorflow.keras.callbacks import EarlyStopping
 import pandas as pd
 from pathlib import Path
+from scipy.signal import stft
 
 import pdb
 
@@ -81,7 +82,7 @@ class AudioReconstructor:
         result_path = config.results_dir
         participants = ['sub-%02d' % i for i in range(1, 11)]
         
-        destination = Path(config.current_dir, 'correlations')
+        destination = Path(config.current_dir, 'CNN')
         os.makedirs(destination, exist_ok=True)
         early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
         losses = []
@@ -92,29 +93,42 @@ class AudioReconstructor:
         
         for p_idx, participant in enumerate(participants):
             print(f'Processing participant {participant}...')
-            # Load participant data
+
             spectrograms = np.load(os.path.join(feature_path, f'{participant}_spec.npy'))
             features = np.load(os.path.join(feature_path, f'{participant}_feat.npy'))
             
-            # Normalize features once for the entire dataset
             print("Normalizing data...")
             features = self._normalize_data(features)
 
             X, y = features, spectrograms 
             x_train, x_test, y_train, y_test = train_test_split(X, y)
-            self.estimator = model_Seq(x_train.shape, y_train.shape[1])
+
+            x_train = x_train.reshape(x_train.shape[0], 9, -1)
+            x_test = x_test.reshape(x_test.shape[0], 9, -1)
+
+
+            model= NeuroInceptDecoder(
+                input_shape=(x_train.shape[1], x_train.shape[2]),
+                output_shape= y_train.shape[1]
+            )
+            self.estimator = model.build_model()
+            #self.estimator = model
+            self.estimator.compile(optimizer='adam', loss='mse')
+            
             history = self.estimator.fit(x_train, y_train, 
                                batch_size=config.batch_size, epochs=config.epochs, 
                                validation_data=(x_test, y_test), 
                                callbacks=[early_stopping]
             )
             
+            self.save_spectrograms(destination,features, spectrograms)
+
             reconstructed_spectrograms = self.estimator.predict(x_test)
-            
-            #stgi = self.calculate_stgi(reconstructed_spectrogram, y_test)
+            pdb.set_trace()
+
             correlations, stgi = self.eveluate_on_random_folds(reconstructed_spectrograms, y_test)
             
-            print(f'{participant} has mean coorelation of {np.mean(correlations)}, len of stgi {len(stgi)}')
+            print(f'{participant} has mean coorelation of {np.mean(correlations)}, stgi {np.mean(stgi)}')
             
             name = Path(destination, participant)
             np.save(f'{name}_corr.npy', correlations)
@@ -141,22 +155,18 @@ class AudioReconstructor:
         print("Saving evaluation results...")
         results.to_csv(Path(destination, 'results.csv'))
     
-    def eveluate_on_random_folds(self, reconstructed_spectrograms, y_test):
-        n_folds = config.num_folds
-        correlations = []
-        stgis = []
-        for index in range(n_folds):
-            indicies = np.random.randint(0, reconstructed_spectrograms.shape[0], size=1000)
-            sample_spectrograms = reconstructed_spectrograms[indicies]
-            y = y_test[indicies]
-            correlation = self.evaluate_fold(sample_spectrograms, y)
-            correlations.append(correlation)
-            stgi = self.calculate_stgi(y, sample_spectrograms)
-            stgis.append(stgi)
-        
-        return np.array(correlations), np.array(stgis)
+    
+    def save_spectrograms(self,destination,  features, spectrograms):
+        features = features.reshape(features.shape[0], 9, -1)
+        #destination = Path(config.current_dir, 'Reconstructed')
+        #os.makedirs(destination, exist_ok=True)
+        print('Saving original and reconstructed in ', destination)
+        predicted = self.estimator.predict(features)
+        np.save(Path(destination, 'predicted.npy'), predicted)
+        np.save(Path(destination, 'original.npy'), spectrograms)
 
-
+    
+    
     def _normalize_data(self, features):
         print("Normalizing features using training data statistics...")
         sclaer = StandardScaler()
@@ -195,3 +205,22 @@ class AudioReconstructor:
             stgis.append(stgi)
 
         return stgis
+    
+
+    def eveluate_on_random_folds(self, reconstructed_spectrograms, y_test):
+        n_folds = config.num_folds
+        correlations = []
+        stgis = []
+        for index in range(n_folds):
+            indicies = np.random.randint(0, reconstructed_spectrograms.shape[0], size=1000)
+            sample_spectrograms = reconstructed_spectrograms[indicies]
+            y = y_test[indicies]
+            correlation = self.evaluate_fold(sample_spectrograms, y)
+            correlations.append(correlation)
+            stgi = self.calculate_stgi(y, sample_spectrograms)
+            stgis.append(stgi)
+        
+        return np.array(correlations), np.array(stgis)
+
+
+
