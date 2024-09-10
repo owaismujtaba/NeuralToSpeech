@@ -2,16 +2,27 @@
 
 ## Technology Stack
 
-![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
-![NumPy](https://img.shields.io/badge/NumPy-1.21+-lightgrey.svg)
-![SciPy](https://img.shields.io/badge/SciPy-1.7+-lightgrey.svg)
-![TensorFlow](https://img.shields.io/badge/TensorFlow-2.6+-orange.svg)
-![Librosa](https://img.shields.io/badge/Librosa-0.8+-yellow.svg)
-![Matplotlib](https://img.shields.io/badge/Matplotlib-3.4+-brightgreen.svg)
-![Scikit-learn](https://img.shields.io/badge/Scikit--learn-0.24+-red.svg)
-![Pandas](https://img.shields.io/badge/Pandas-1.3+-purple.svg)
-![Seaborn](https://img.shields.io/badge/Seaborn-0.11+-green.svg)
-![pyWNB](https://img.shields.io/badge/pyWNB-0.1.1-blue.svg)
+![absl-py](https://img.shields.io/badge/absl--py-2.1.0-blue.svg)
+![arrow](https://img.shields.io/badge/arrow-1.3.0-lightgrey.svg)
+![astunparse](https://img.shields.io/badge/astunparse-1.6.3-lightgrey.svg)
+![h5py](https://img.shields.io/badge/h5py-3.11.0-lightgrey.svg)
+![hdmf](https://img.shields.io/badge/hdmf-3.14.4-lightgrey.svg)
+![keras](https://img.shields.io/badge/keras-3.5.0-lightgrey.svg)
+![kiwisolver](https://img.shields.io/badge/kiwisolver-1.4.7-lightgrey.svg)
+![libclang](https://img.shields.io/badge/libclang-18.1.1-lightgrey.svg)
+![numpy](https://img.shields.io/badge/numpy-1.26.4-lightgrey.svg)
+![pandas](https://img.shields.io/badge/pandas-2.2.2-lightgrey.svg)
+![pillow](https://img.shields.io/badge/pillow-10.4.0-lightgrey.svg)
+![pynwb](https://img.shields.io/badge/pynwb-2.8.2-lightgrey.svg)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-1.5.1-lightgrey.svg)
+![scipy](https://img.shields.io/badge/scipy-1.14.1-lightgrey.svg)
+![seaborn](https://img.shields.io/badge/seaborn-0.13.2-lightgrey.svg)
+![six](https://img.shields.io/badge/six-1.16.0-lightgrey.svg)
+![tensorboard](https://img.shields.io/badge/tensorboard-2.17.1-lightgrey.svg)
+![tensorboard-data-server](https://img.shields.io/badge/tensorboard--data--server-0.7.2-lightgrey.svg)
+![tensorflow](https://img.shields.io/badge/tensorflow-2.17.0-lightgrey.svg)
+![tensorflow-io-gcs-filesystem](https://img.shields.io/badge/tensorflow--io--gcs--filesystem-0.37.1-lightgrey.svg)
+
 
 This project focuses on processing, reconstructing, and visualizing audio data. It is designed to work with datasets that involve audio recordings from multiple participants, performing tasks such as feature extraction, audio reconstruction, and generating visualizations to assess performance.
 
