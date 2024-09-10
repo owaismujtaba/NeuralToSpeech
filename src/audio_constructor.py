@@ -10,11 +10,12 @@ from sklearn.model_selection import train_test_split
 import src.reconstructWave as rW
 import src.MelFilterBank as mel
 import src.config as config
-from src.models import NeuroInceptDecoder, FCN, CNN
+from src.models import NeuroInceptDecoder, FCN, CNN, inceptDecoder
 from tensorflow.keras.callbacks import EarlyStopping
 import pandas as pd
 from pathlib import Path
 from scipy.signal import stft
+from tensorflow.keras.optimizers import Adam
 
 import pdb
 
@@ -41,40 +42,7 @@ class AudioReconstructor:
             correlations[spec_bin] = r
         return correlations
 
-    def compute_random_baseline(self, spectrogram):
-        print("Computing random baseline correlations...")
-
-        # Initialize the array to hold correlation results
-        num_time_shifts = self.num_random
-        num_frequency_bins = spectrogram.shape[1]
-        random_correlations = np.zeros((num_time_shifts, num_frequency_bins))
-
-        # Number of time frames in the spectrogram
-        num_time_frames = spectrogram.shape[0]
-
-        # Compute random correlations
-        for i in range(num_time_shifts):
-            # Randomly select a shift point within the middle 80% of the time axis
-            shift_point = np.random.randint(int(num_time_frames * 0.1), int(num_time_frames * 0.9))
-            
-            # Circularly shift the spectrogram along the time axis
-            shifted_spectrogram = np.roll(spectrogram, shift=-shift_point, axis=0)
-
-            # Compute correlations between original and shifted spectrogram for each frequency bin
-            try:
-                for bin_idx in range(num_frequency_bins):
-                    # Compute Pearson correlation for each frequency bin
-                    original_bin = spectrogram[:, bin_idx]
-                    shifted_bin = shifted_spectrogram[:, bin_idx]
-
-                    # Ensure both arrays have the same shape
-                    if len(original_bin) == len(shifted_bin):
-                        correlation, _ = pearsonr(original_bin, shifted_bin)
-                        random_correlations[i, bin_idx] = correlation
-            except:
-                pdb.set_trace()
-        return random_correlations
-
+    
 
     def reconstruct(self):
         print("Starting reconstruction process...")
@@ -107,13 +75,13 @@ class AudioReconstructor:
             x_test = x_test.reshape(x_test.shape[0], 9, -1)
 
 
-            model= NeuroInceptDecoder(
+            model= inceptDecoder(
                 input_shape=(x_train.shape[1], x_train.shape[2]),
                 output_shape= y_train.shape[1]
             )
-            self.estimator = model.build_model()
-            #self.estimator = model
-            self.estimator.compile(optimizer='adam', loss='mse')
+            #self.estimator = model.build_model()
+            self.estimator = model
+            self.estimator.compile(optimizer=Adam(learning_rate=0.0001), loss='mse')
             
             history = self.estimator.fit(x_train, y_train, 
                                batch_size=config.batch_size, epochs=config.epochs, 

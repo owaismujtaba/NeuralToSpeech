@@ -8,6 +8,63 @@ from tensorflow.keras.callbacks import EarlyStopping
 early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
 
 
+
+def inception_module(input_tensor, filters):
+
+    # 1x1 convolution
+    conv_1x1 = Conv1D(filters, 1, padding='same', activation='relu')(input_tensor)
+
+    # 3x3 convolution
+    conv_3x3 = Conv1D(filters, 3, padding='same', activation='relu')(input_tensor)
+
+    # 5x5 convolution
+    conv_5x5 = Conv1D(filters, 5, padding='same', activation='relu')(input_tensor)
+
+    # MaxPooling followed by 1x1 convolution
+    max_pool = MaxPooling1D(3, strides=1, padding='same')(input_tensor)
+    max_pool = Conv1D(filters, 1, padding='same', activation='relu')(max_pool)
+
+    # Concatenate all the layers
+    output = concatenate([conv_1x1, conv_3x3, conv_5x5, max_pool], axis=-1)
+
+    return output
+
+def inceptDecoder(input_shape, output_shape):
+    input_layer = Input(shape=input_shape)
+
+    # Inception Module 1
+    x = inception_module(input_layer, 64)
+
+    # GRU Layer(s)
+    x = GRU(128, return_sequences=True, activation='relu')(x)
+    x = GRU(256, return_sequences=True, activation='relu')(x)
+    x = GRU(512, return_sequences=False, activation='relu')(x)
+
+    # Reshape the output to add a time dimension of 1 (necessary for Conv1D)
+    x = Reshape((1, 512))(x)
+
+    # Inception Module 2
+    x = inception_module(x, 128)
+
+    # Flatten the output from Inception modules and GRU layers
+    x = Flatten()(x)
+
+    # Fully Connected Layers
+    x = Dense(1024, activation='relu')(x)
+    x = Dense(1024, activation='relu')(x)
+    x = Dense(512, activation='relu')(x)
+    x = Dense(256, activation='relu')(x)
+    x = Dense(128, activation='relu')(x)
+
+    output_layer = Dense(output_shape, activation='linear')(x)
+
+    model = Model(inputs=input_layer, outputs=output_layer)
+
+    return model
+
+
+
+
 class NeuroInceptDecoder:
     def __init__(self, input_shape, output_shape):
         self.input_shape = input_shape

@@ -13,7 +13,7 @@ fontsize = 16
 def plot_history():
     print('*****************Plotting History******************')
 
-    folder = 'Complex'
+    folder = 'NeuroIncept'
     destination = Path(config.current_dir, 'Images')
     os.makedirs(destination, exist_ok=True)
     
@@ -87,7 +87,7 @@ def plot_spectrograms():
 def plot_correlation():
     print('*****************Plotting Correlations******************')
 
-    folder = Path(config.current_dir, 'Complex')
+    folder = Path(config.current_dir, 'NeuroIncept')
     destination = Path(config.current_dir, 'Images')
     os.makedirs(destination, exist_ok=True)
     
@@ -142,7 +142,7 @@ def plot_correlation():
 
 def plot_stgis():
     print('*****************Plotting STGIS******************')
-    folder = Path(config.current_dir, 'Complex')
+    folder = Path(config.current_dir, 'NeuroIncept')
     destination = Path(config.current_dir, 'Images')
     os.makedirs(destination, exist_ok=True)
     
