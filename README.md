@@ -89,9 +89,6 @@ If `visualization` is set to `True` in the configuration file, the project will 
 
 The project uses a dataset called `SingleWordProductionDutch-iBIDS`, which should be placed in the directory specified in `config.py` under `dataset_dir`.
 
-# Audio Processing and Reconstruction Project
-
-This project focuses on processing, reconstructing, and visualizing audio data.
 
 
 
