@@ -1,4 +1,4 @@
-# Audio Processing and Reconstruction Project
+# NeuroIncept Decoder
 
 ## Technology Stack
 
