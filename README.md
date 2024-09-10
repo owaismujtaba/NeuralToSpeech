@@ -65,6 +65,17 @@ If `visualization` is set to `True` in the configuration file, the project will 
 
 The project uses a dataset called `SingleWordProductionDutch-iBIDS`, which should be placed in the directory specified in `config.py` under `dataset_dir`.
 
----
+## Packages Used
 
-Feel free to adjust the configuration settings to experiment with different parameters for feature extraction, reconstruction, and visualization.
+This project uses the following key Python packages:
+
+- `numpy`: For numerical operations and array manipulation.
+- `scipy`: For signal processing and scientific computations.
+- `librosa`: For audio processing and feature extraction.
+- `matplotlib`: For generating plots and visualizations.
+- `tensorflow`: For model building, training, and evaluation.
+- `scikit-learn`: For statistical modeling and cross-validation.
+- `pandas`: For data manipulation and analysis.
+- `joblib`: For parallel processing.
+- `seaborn`: For enhanced visualizations and plotting.
+
