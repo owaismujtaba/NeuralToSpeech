@@ -82,7 +82,7 @@ class AudioReconstructor:
         result_path = config.results_dir
         participants = ['sub-%02d' % i for i in range(1, 11)]
         
-        destination = Path(config.current_dir, 'CNN')
+        destination = Path(config.current_dir, 'NeuroIncept')
         os.makedirs(destination, exist_ok=True)
         early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
         losses = []
@@ -120,11 +120,9 @@ class AudioReconstructor:
                                validation_data=(x_test, y_test), 
                                callbacks=[early_stopping]
             )
-            pdb.set_trace()
             self.save_spectrograms(destination,features, spectrograms)
 
             reconstructed_spectrograms = self.estimator.predict(x_test)
-            pdb.set_trace()
 
             correlations, stgi = self.eveluate_on_random_folds(reconstructed_spectrograms, y_test)
             
