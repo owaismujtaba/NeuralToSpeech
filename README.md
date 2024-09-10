@@ -1,5 +1,17 @@
 # Audio Processing and Reconstruction Project
 
+## Technology Stack
+
+![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
+![NumPy](https://img.shields.io/badge/NumPy-1.21+-lightgrey.svg)
+![SciPy](https://img.shields.io/badge/SciPy-1.7+-lightgrey.svg)
+![TensorFlow](https://img.shields.io/badge/TensorFlow-2.6+-orange.svg)
+![Librosa](https://img.shields.io/badge/Librosa-0.8+-yellow.svg)
+![Matplotlib](https://img.shields.io/badge/Matplotlib-3.4+-brightgreen.svg)
+![Scikit-learn](https://img.shields.io/badge/Scikit--learn-0.24+-red.svg)
+![Pandas](https://img.shields.io/badge/Pandas-1.3+-purple.svg)
+![Seaborn](https://img.shields.io/badge/Seaborn-0.11+-green.svg)
+
 This project focuses on processing, reconstructing, and visualizing audio data. It is designed to work with datasets that involve audio recordings from multiple participants, performing tasks such as feature extraction, audio reconstruction, and generating visualizations to assess performance.
 
 ## Project Structure
@@ -69,15 +81,5 @@ The project uses a dataset called `SingleWordProductionDutch-iBIDS`, which shoul
 
 This project focuses on processing, reconstructing, and visualizing audio data.
 
-## Technology Stack
 
-![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
-![NumPy](https://img.shields.io/badge/NumPy-1.21+-lightgrey.svg)
-![SciPy](https://img.shields.io/badge/SciPy-1.7+-lightgrey.svg)
-![TensorFlow](https://img.shields.io/badge/TensorFlow-2.6+-orange.svg)
-![Librosa](https://img.shields.io/badge/Librosa-0.8+-yellow.svg)
-![Matplotlib](https://img.shields.io/badge/Matplotlib-3.4+-brightgreen.svg)
-![Scikit-learn](https://img.shields.io/badge/Scikit--learn-0.24+-red.svg)
-![Pandas](https://img.shields.io/badge/Pandas-1.3+-purple.svg)
-![Seaborn](https://img.shields.io/badge/Seaborn-0.11+-green.svg)
 
