@@ -7,12 +7,14 @@ import numpy as np
 import src.config as config
 import pandas as pd
 import pdb
+fontsize = 16
+
 
 def plot_history():
     print('*****************Plotting History******************')
 
-    folder = 'correlations'
-    destination = Path(config.current_dir, 'Results')
+    folder = 'Complex'
+    destination = Path(config.current_dir, 'Images')
     os.makedirs(destination, exist_ok=True)
     
     files = os.listdir(folder)
@@ -25,23 +27,70 @@ def plot_history():
         plt.plot(data['val_loss'])
     
     plt.legend(names)
-    plt.xlabel('Epochs', fontsize=14, fontweight='bold')
-    plt.ylabel('Mean Squared Error', fontsize=14, fontweight='bold')
-    plt.xticks(fontsize=12, fontweight='bold')
-    plt.yticks(fontsize=12, fontweight='bold')
+    plt.xlabel('Epochs', fontsize=fontsize+2, fontweight='bold')
+    plt.ylabel('Mean Squared Error', fontsize=fontsize+2, fontweight='bold')
+    plt.xticks(fontsize=fontsize, fontweight='bold')
+    plt.yticks(fontsize=fontsize, fontweight='bold')
 
     plt.tight_layout()
    
     plt.savefig(Path(destination, 'history.png'), dpi=600)
     plt.clf()
     
+def plot_spectrograms():
+    start, end = 1100, 1600
+    predicted_neuro = np.load('NeuroIncept/predicted.npy')
+    predicted_FCN = np.load('FCN/predicted.npy')
+    predicted_CNN = np.load('CNN/predicted.npy')
+    original = np.load('NeuroIncept/original.npy')
+
+    num_samples_per_time = 9
+    num_time_points = original.shape[1] // num_samples_per_time  # Adjusted time points
+    time_adjusted_original = original[:, :num_time_points * num_samples_per_time]
+    time_adjusted_original = time_adjusted_original.reshape(original.shape[0], num_time_points, num_samples_per_time).mean(axis=2)
+    time_adjusted_FCN = predicted_FCN[:, :num_time_points * num_samples_per_time]
+    time_adjusted_FCN = time_adjusted_FCN.reshape(predicted_FCN.shape[0], num_time_points, num_samples_per_time).mean(axis=2)
+    time_adjusted_CNN = predicted_CNN[:, :num_time_points * num_samples_per_time]
+    time_adjusted_CNN = time_adjusted_CNN.reshape(original.shape[0], num_time_points, num_samples_per_time).mean(axis=2)
+    time_adjusted_neuro = predicted_neuro[:, :num_time_points * num_samples_per_time]
+    time_adjusted_neuro = time_adjusted_neuro.reshape(original.shape[0], num_time_points, num_samples_per_time).mean(axis=2)
+
+    fig, ax = plt.subplots(2, 2, figsize=(12, 6), sharex=True, sharey=True)
+
+    im = ax[0, 0].imshow(time_adjusted_original[start:end].T, aspect='auto', origin='lower', cmap='viridis')
+    ax[0, 0].set_title('Original Log Mel Spectrogram', fontsize=fontsize, fontweight='bold')
+
+    ax[0, 1].imshow(time_adjusted_neuro[start:end].T, aspect='auto', origin='lower', cmap='viridis')
+    ax[0, 1].set_title('NeuroIncept Decoder', fontsize=fontsize, fontweight='bold')
+
+    ax[1, 0].imshow(time_adjusted_CNN[start:end].T, aspect='auto', origin='lower', cmap='viridis')
+    ax[1, 0].set_title('CNN', fontsize=fontsize, fontweight='bold')
+
+    ax[1, 1].imshow(time_adjusted_FCN[start:end].T, aspect='auto', origin='lower', cmap='viridis')
+    ax[1, 1].set_title('FCN', fontsize=fontsize, fontweight='bold')
+
+    for i in range(2):
+        for j in range(2):
+                ax[i, j].tick_params(labelleft=False, labelbottom=False)
+    labels = ['a)', 'b)', 'c)', 'd)']  
+
+    for i, ax in enumerate(ax.flat):
+        ax.plot([1, 2, 3], [1, 4, 9])  
+        ax.text(0.0, 1.1, labels[i], transform=ax.transAxes, fontsize=16, fontweight='bold', 
+                verticalalignment='top', horizontalalignment='right')
+
+    plt.tight_layout()
+    destination = Path(config.current_dir, 'Images')
+    plt.savefig(Path(destination, 'spectrogram_comparison.png'), dpi=600)
+    plt.clf()
+
 
 
 def plot_correlation():
     print('*****************Plotting Correlations******************')
 
-    folder = Path(config.current_dir, 'correlations')
-    destination = Path(config.current_dir, 'Results')
+    folder = Path(config.current_dir, 'Complex')
+    destination = Path(config.current_dir, 'Images')
     os.makedirs(destination, exist_ok=True)
     
     files = os.listdir(folder)
@@ -62,13 +111,13 @@ def plot_correlation():
 
     mean_per_subject = np.mean(mean_correlations, axis=1)  # Shape: (10,)
     std_per_subject = np.std(mean_correlations, axis=1)  # Shape: (10,)
-    #pdb.set_trace()
     sorted_indices = np.argsort(mean_per_subject)
     sorted_mean_per_subject = mean_per_subject[sorted_indices]
     sorted_std_per_subject = std_per_subject[sorted_indices]
     sorted_mean_correlations = mean_correlations[sorted_indices]
     sorted_dot_colors = sns.color_palette("coolwarm", n_colors=num_subjects)
-
+    print(sorted_mean_per_subject)
+    
     fig, ax = plt.subplots(figsize=(14, 7))
     bar_colors = sns.color_palette("viridis", n_colors=num_subjects)
 
@@ -85,20 +134,18 @@ def plot_correlation():
     
     ax.grid(True, linestyle='--', alpha=0.7)
     plt.ylim([0.8,0.95])
-    plt.xticks(fontsize=12, fontweight='bold')
-    plt.yticks(fontsize=12, fontweight='bold')
+    plt.xticks(fontsize=fontsize, fontweight='bold')
+    plt.yticks(fontsize=fontsize, fontweight='bold')
     fig.tight_layout()
 
     # Show the plot
     plt.savefig(Path(destination, 'correlations.png'), dpi=600)
     plt.clf()
 
-
-
 def plot_stgis():
     print('*****************Plotting STGIS******************')
-    folder = Path(config.current_dir, 'correlations')
-    destination = Path(config.current_dir, 'Results')
+    folder = Path(config.current_dir, 'Complex')
+    destination = Path(config.current_dir, 'Images')
     os.makedirs(destination, exist_ok=True)
     
     files = os.listdir(folder)
@@ -121,41 +168,34 @@ def plot_stgis():
 
     sorted_indices = np.argsort(mean_per_subject)
     sorted_mean_correlations = mean_correlations[sorted_indices]
-    sorted_dot_colors = sns.color_palette("coolwarm", n_colors=num_subjects)
+    print(np.mean(sorted_mean_correlations, axis=1))
     
-    # Creating box plots
     fig, ax = plt.subplots(figsize=(14, 7))
-    box_colors = sns.color_palette("viridis", n_colors=num_subjects)
     
     meanprops = dict(marker='s', markerfacecolor='white', markeredgecolor='black', markersize=7)
     box_data = [sorted_mean_correlations[i] for i in range(num_subjects)]
     
-    box = ax.boxplot(box_data, patch_artist=True, notch=False, showmeans=True, 
+    box = ax.boxplot(box_data, patch_artist=False, notch=False, showmeans=True, 
                      meanprops=meanprops, showfliers=False)
 
-    for patch, color in zip(box['boxes'], box_colors):
-        patch.set_facecolor(color)
-        patch.set_edgecolor('black')
     
-    # Plot individual data points (after boxplot so they appear in front)
+    
     for i in range(num_subjects):
         y = sorted_mean_correlations[i]
         x = np.random.normal(i + 1, 0.04, size=len(y))  # Add some jitter to the x-axis
-        ax.scatter(x, y, color=sorted_dot_colors[i], alpha=0.7, s=20, edgecolor='black', zorder=3)
+        ax.scatter(x, y, color='black', alpha=0.7, s=20, edgecolor='black', zorder=3)
 
     ax.set_ylabel('STGI', fontsize=16, fontweight='bold')
-    #ax.set_xticks(range(num_subjects))
    
     labels = [f'sub-{names[i]}' for i in sorted_indices]
-    ax.set_xticklabels(labels, fontsize=14, fontweight='bold')
-    #ax.set_yticklabels(ax.get_yticks(), fontsize=14, fontweight='bold')
+    print(labels)
+    ax.set_xticklabels(labels, fontsize=fontsize, fontweight='bold')
     ax.grid(True, linestyle='--', alpha=0.7)
 
-   
-    plt.ylim([0.45, 0.65])
+    plt.ylim([0.45, 0.57])
     fig.tight_layout()
-    plt.xticks(fontsize=12, fontweight='bold')
-    plt.yticks(fontsize=12, fontweight='bold')
+    plt.xticks(fontsize=fontsize, fontweight='bold')
+    plt.yticks(fontsize=fontsize, fontweight='bold')
 
     # Save the plot
     plt.savefig(Path(destination, 'stgis.png'), dpi=600)
