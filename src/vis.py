@@ -84,8 +84,6 @@ def plot_spectrograms():
     plt.savefig(Path(destination, 'spectrogram_comparison.png'), dpi=600)
     plt.clf()
 
-
-
 def plot_correlation():
     print('*****************Plotting Correlations******************')
 
@@ -172,7 +170,7 @@ def plot_stgis():
     
     fig, ax = plt.subplots(figsize=(14, 7))
     
-    meanprops = dict(marker='s', markerfacecolor='white', markeredgecolor='black', markersize=7)
+    meanprops = dict(marker='s', markerfacecolor='green', markeredgecolor='red', markersize=10)
     box_data = [sorted_mean_correlations[i] for i in range(num_subjects)]
     
     box = ax.boxplot(box_data, patch_artist=False, notch=False, showmeans=True, 
@@ -196,7 +194,7 @@ def plot_stgis():
     fig.tight_layout()
     plt.xticks(fontsize=fontsize, fontweight='bold')
     plt.yticks(fontsize=fontsize, fontweight='bold')
-
+    plt.subplots_adjust(left=0.08)
     # Save the plot
     plt.savefig(Path(destination, 'stgis.png'), dpi=600)
     plt.clf()

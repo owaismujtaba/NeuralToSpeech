@@ -120,7 +120,7 @@ class AudioReconstructor:
                                validation_data=(x_test, y_test), 
                                callbacks=[early_stopping]
             )
-            
+            pdb.set_trace()
             self.save_spectrograms(destination,features, spectrograms)
 
             reconstructed_spectrograms = self.estimator.predict(x_test)
