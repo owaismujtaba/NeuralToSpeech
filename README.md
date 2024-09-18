@@ -1,5 +1,7 @@
 # NeuroIncept Decoder
 
+This project focuses on reconstructing speech from EEG signals using deep learning techniques. It processes audio recordings from multiple participants, extracts features, reconstructs audio, and visualizes results.
+
 ## Technology Stack
 
 ![absl-py](https://img.shields.io/badge/absl--py-2.1.0-blue.svg)
@@ -23,72 +25,68 @@
 ![tensorflow](https://img.shields.io/badge/tensorflow-2.17.0-lightgrey.svg)
 ![tensorflow-io-gcs-filesystem](https://img.shields.io/badge/tensorflow--io--gcs--filesystem-0.37.1-lightgrey.svg)
 
-
-This project focuses on processing, reconstructing, and visualizing audio data. It is designed to work with datasets that involve audio recordings from multiple participants, performing tasks such as feature extraction, audio reconstruction, and generating visualizations to assess performance.
-
 ## Project Structure
 
-- **Feature Extraction**: Extracts important features from the audio recordings of multiple participants.
-- **Audio Reconstruction**: Recreates audio signals from the extracted features using the custom `AudioReconstructor` class.
-- **Visualization**: Generates plots to visualize correlations, STGI (Short-Time Geometric Image) results, and model training history.
+- `src/`: Source code directory
+  - `feature_extractor.py`: EEG and audio data processing
+  - `audio_constructor.py`: Speech reconstruction
+  - `config.py`: Project configuration
+  - `models.py`: Model definitions
+  - `visualization.py`: Result visualization
+- `main.py`: Main execution script
+- `SingleWordProductionDutch-iBIDS/`: Dataset directory
+- `features/`: Extracted features storage
+- `results/`: Reconstruction results and visualizations
 
 ## Preprocessing Pipeline
-
-Below is an illustration of the preprocessing pipeline used in the project:
 
 ![Preprocessing Pipeline](Images/dataprocessing.PNG)
 
 ## Model Architecture
 
-The custom model architecture used for audio reconstruction is shown below:
-
 ![Model Architecture](Images/model.png)
+
+## Setup and Usage
+
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Configure the project in `src/config.py`
+4. Run the main script:
+   ```bash
+   python main.py
+   ```
 
 ## Configuration
 
-The project is configured using the `config` file located in `src/config.py`. The key parameters include:
+Key parameters in `src/config.py`:
 
-- **num_jobs**: Number of parallel jobs for processing (default: 20)
-- **extract_features**: Whether to run feature extraction (`True` or `False`)
-- **construct**: Whether to run the audio reconstruction process (`True` or `False`)
-- **visualization**: Whether to generate visualizations (`True` or `False`)
-- **current_dir**: The current working directory.
-- **dataset_dir**: Directory containing the dataset (`SingleWordProductionDutch-iBIDS`).
-- **features_dir**: Directory where extracted features are stored.
-- **results_dir**: Directory where the results (e.g., reconstructions, plots) will be saved.
-- **no_of_mel_spectrograms**: The number of mel spectral Bins (default: 128).
-- **epochs**: Number of epochs for model training (default: 100).
-- **batch_size**: Batch size for model training (default: 128).
-- **num_folds**: Number of folds for cross-validation (default: 10).
-
-## How to Run
-
-1. **Install Dependencies**: Make sure to install the required Python libraries before running the project. You can install them using:
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-2. **Configure the Project**: Modify the settings in `src/config.py` to fit your requirements. For example, set `extract_features`, `construct`, or `visualization` to `True` depending on the tasks you want to perform.
-
-3. **Run the Script**:
-    - To run the feature extraction, reconstruction, and visualization:
-    ```bash
-    python main.py
-    ```
+- `num_jobs`: Number of parallel jobs for processing (default: 20)
+- `extract_features`: Whether to run feature extraction (`True` or `False`)
+- `construct`: Whether to run the audio reconstruction process (`True` or `False`)
+- `visualization`: Whether to generate visualizations (`True` or `False`)
+- `current_dir`: The current working directory
+- `dataset_dir`: Directory containing the dataset (`SingleWordProductionDutch-iBIDS`)
+- `features_dir`: Directory where extracted features are stored
+- `results_dir`: Directory where the results (e.g., reconstructions, plots) will be saved
+- `no_of_mel_spectrograms`: The number of mel spectral bins (default: 128)
+- `epochs`: Number of epochs for model training (default: 100)
+- `batch_size`: Batch size for model training (default: 128)
+- `num_folds`: Number of folds for cross-validation (default: 10)
 
 ## Visualization
 
-If `visualization` is set to `True` in the configuration file, the project will generate the following plots:
+When enabled, the project generates:
 
-- **Correlation Plot**: Shows the bar plot for correlation between the predicted spectrograms by NeuroIncept Decoder Model and original spectrograms for all subjects .
-- **STGI Plot**: Displays Bar Plot of STGI metric for all Subjects.
-- **History Plot**: Plots the history of the model's training process, Validation loss.
-- **Spectrograms Plot**: Spectrograms generated by various model architectures.
+- Correlation plots: Shows the bar plot for correlation between the predicted spectrograms by NeuroIncept Decoder Model and original spectrograms for all subjects
+- STGI (Short-Time Geometric Image) plots: Displays Bar Plot of STGI metric for all Subjects
+- Training history plots: Plots the history of the model's training process, Validation loss
+- Spectrogram comparisons: Spectrograms generated by various model architectures
 
 ## Dataset
 
-The project uses a dataset called `SingleWordProductionDutch-iBIDS`, which should be placed in the directory specified in `config.py` under `dataset_dir`.
-
-
+The project uses the `SingleWordProductionDutch-iBIDS` dataset. Place it in the directory specified by `dataset_dir` in `config.py`.
 
 
